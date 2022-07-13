@@ -72,9 +72,12 @@ namespace GeneradorDeMensajes
 
                 String soloLaFechaActualComoString = "";
                 String soloLaFechaDeDerivacionComoString = "";
+                String soloLaFechaDeAudienciaRealComoString = "";
+                String soloLaFechaDeAntecedentesComoString = "";
+                String soloLaFechaPjudComoString = "";
 
 
-
+                //quitar el tiempo y mantener la fecha
                 if (item.FechaDeDerivacion!=null)
                 {
                 
@@ -88,9 +91,25 @@ namespace GeneradorDeMensajes
                     item.FechaDeDerivacion = soloLaFechaDeDerivacionComoString;
 
 
+                    phrase = item.FechaDeAudienciaReal.ToString();
+                    words = phrase.Split(' ');
+                    soloLaFechaDeAudienciaRealComoString = words[0];
+                    item.FechaDeAudienciaReal = soloLaFechaDeAudienciaRealComoString;
+
+                    phrase = item.FechaDeAntecedentes.ToString();
+                    words = phrase.Split(' ');
+                    soloLaFechaDeAntecedentesComoString = words[0];
+                    item.FechaDeAntecedentes = soloLaFechaDeAntecedentesComoString;
+
+                    phrase = item.Pjud.ToString();
+                    words = phrase.Split(' ');
+                    soloLaFechaPjudComoString = words[0];
+                    item.Pjud = soloLaFechaPjudComoString;
+
                 }
                 
 
+                //si la fecha actual es igual a la fecha de derivacion, entonces se crea el word, para hoy
                 if ((item.RolOficio!= "Rol Oficio" && item.RolOficio != null) && (soloLaFechaActualComoString==soloLaFechaDeDerivacionComoString))
                 {
                     String archivo = downloads + @"\Rol oficio " + item.RolOficio + ".docx";
@@ -144,26 +163,135 @@ namespace GeneradorDeMensajes
 
 
             var x = DateTime.Now;
-            if (x.DayOfWeek == DayOfWeek.Friday)
+            if (x.DayOfWeek != DayOfWeek.Friday)
             {
-                MessageBox.Show("Es viernes");
+                Console.WriteLine("Es viernes");
+                //deben crearse documentos extra
+                List<string> listadoDeAbogados = new List<string>();
+                foreach (var item in derivaciones)
+                {
+                    listadoDeAbogados.Add(item.Asignado);
+                }
+
+                List<String> listadoDeAbogadosConDuplicados = listadoDeAbogados;
+                List<String> listadoDeAbogadosSinDuplicados = listadoDeAbogadosConDuplicados.Distinct().ToList();
+
+
+                foreach (var item in listadoDeAbogadosSinDuplicados)
+                {
+                    String proximasDemandas ="";
+                    int contadorDeDemandasDeLaSemanaQueViene = 0;
+
+                    foreach (var item2 in derivaciones)
+                    {
+
+                        var j = DateTime.Now;
+                        String proximoLunes=j.AddDays(3).ToString();
+                        var proximoMartes = j.AddDays(4).ToString();
+                        var proximoMiercoles = j.AddDays(5).ToString();
+                        var proximoJueves = j.AddDays(6).ToString();
+                        var proximoViernes = j.AddDays(7).ToString();
+
+                     
+                        string[] words = proximoLunes.Split(' ');
+                        String proximoLunesSinTiempo = words[0];
+
+                         words = proximoMartes.Split(' ');
+                        String proximoMartesSinTiempo = words[0];
+
+                         words = proximoMiercoles.Split(' ');
+                        String proximoMiercolesSinTiempo = words[0];
+
+                         words = proximoJueves.Split(' ');
+                        String proximoJuevesSinTiempo = words[0];
+
+                         words = proximoViernes.Split(' ');
+                        String proximoViernesSinTiempo = words[0];
+
+                        List<String> proximasFechas=new List<String>();
+                        proximasFechas.Add(proximoLunesSinTiempo);
+                        proximasFechas.Add(proximoMartesSinTiempo);
+                        proximasFechas.Add(proximoMiercolesSinTiempo);
+                        proximasFechas.Add(proximoJuevesSinTiempo);
+                        proximasFechas.Add(proximoViernesSinTiempo);
+
+                        String[] listadoDeProximasFechas = proximasFechas.ToArray();
+
+                        if (item.ToString()==item2.Asignado && listadoDeProximasFechas.Contains(item2.FechaDeAudienciaReal))//si el registro
+                        {
+                            proximasDemandas += "el día "+item2.FechaDeAudienciaReal+" "+Environment.NewLine;
+                            contadorDeDemandasDeLaSemanaQueViene++;
+                        }
+                    }
+
+                    proximasDemandas += ".";
+
+                    //crear word de recordatorio
+
+                    String archivo = downloads + @"\Recordatorio para " + item.ToString() + ".docx";
+
+                    var doc = DocX.Create(archivo);
+
+                    //titulo que va a llevar el word
+                    string title = "Estimado/a " + item.ToString() + ",";
+
+                    //texto a escribir en el word
+                    string textParagraph = "se le recuerda que tiene demandas asignadas para la semana que viene. Especificamente los días:"+Environment.NewLine
+                        +proximasDemandas;
+
+
+
+                    Formatting titleFormat = new Formatting();
+                    //Specify font family  
+                    titleFormat.FontFamily = new Xceed.Document.NET.Font("Times New Roman");
+                    //Specify font size  
+                    titleFormat.Size = 12;
+                    titleFormat.Position = 40;
+                    titleFormat.FontColor = System.Drawing.Color.Black;
+                    //titleFormat.UnderlineColor = System.Drawing.Color.Gray;
+                    //titleFormat.Italic = true;
+
+                    //Formatting Text Paragraph  
+                    Formatting textParagraphFormat = new Formatting();
+                    //font family  
+                    textParagraphFormat.FontFamily = new Xceed.Document.NET.Font("Times New Roman");
+                    //font size  
+                    textParagraphFormat.Size = 12;
+                    //Spaces between characters  
+                    textParagraphFormat.Spacing = 2;
+
+
+                    doc.InsertParagraph(title, false, titleFormat);
+                    doc.InsertParagraph(textParagraph, false, titleFormat);//textParagraphFormat
+
+                    if (contadorDeDemandasDeLaSemanaQueViene>0)
+                    {
+                        doc.Save();
+                    }
+                    
+
+
+                }
+
             }
             else
             {
-                MessageBox.Show("No es viernes");
+                Console.WriteLine("No es viernes");
+                //no se crean documentos extras
+                
             }
 
 
 
             if (contadorDeWordsCreados > 1)
             {
-                MessageBox.Show("Se crearon "+contadorDeWordsCreados.ToString()+" documentos en la carpeta de descargas");
+                MessageBox.Show("Se crearon "+contadorDeWordsCreados.ToString()+" documentos en la carpeta de descargas para enviar hoy");
             }else if (contadorDeWordsCreados==1)
             {
-                MessageBox.Show("Se creó un documento en la carpeta de descargas");
+                MessageBox.Show("Se creó un documento en la carpeta de descargas para enviar hoy");
             }else if (contadorDeWordsCreados==0)
             {
-                MessageBox.Show("No se creó ningún documento");
+                MessageBox.Show("No se creó ningún documento para enviar hoy");
             }
             
 
