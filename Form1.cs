@@ -61,8 +61,10 @@ namespace GeneradorDeMensajes
             string localfolder = ApplicationData.Current.LocalFolder.Path;
             var array = localfolder.Split('\\');
             var username = array[2];
-            string downloads = @"C:\Users\" + username + @"\Downloads";
+            string downloads = @"C:\Users\" + username + @"\Downloads\MensajesGenerados\";
 
+
+            DirectoryInfo di = Directory.CreateDirectory(downloads);
 
             int contadorDeWordsCreadosConFechaDeDerivacionActual = 0;
 
@@ -101,10 +103,10 @@ namespace GeneradorDeMensajes
                     soloLaFechaDeAudienciaRealComoString = words[0];
                     item.FechaDeAudienciaReal = soloLaFechaDeAudienciaRealComoString;
 
-                    phrase = item.FechaDeAntecedentes.ToString();
-                    words = phrase.Split(' ');
-                    soloLaFechaDeAntecedentesComoString = words[0];
-                    item.FechaDeAntecedentes = soloLaFechaDeAntecedentesComoString;
+                    //phrase = item.FechaDeAntecedentes.ToString();
+                    //words = phrase.Split(' ');
+                    //soloLaFechaDeAntecedentesComoString = words[0];
+                    //item.FechaDeAntecedentes = soloLaFechaDeAntecedentesComoString;
 
                     phrase = item.Pjud.ToString();
                     words = phrase.Split(' ');
@@ -176,10 +178,11 @@ namespace GeneradorDeMensajes
 
 
 
-            //si el día en el que corre el proceso, es un viernes, entonces deben crearse words de recordatorio de 
-            //las semanas que viene (para enviarse ese mismo viernes, o sea, la fecha actual)
+            //si el día en el que corre el proceso, es un jueves, entonces deben crearse words de recordatorio de 
+            //la semana que viene (para enviarse ese mismo viernes, o sea, la fecha actual)
+            
             var x = DateTime.Now;
-            if (x.DayOfWeek == DayOfWeek.Friday)
+            if (x.DayOfWeek == DayOfWeek.Thursday)
             {
                 Console.WriteLine("Es viernes");
                 //deben crearse documentos extra
@@ -368,11 +371,11 @@ namespace GeneradorDeMensajes
                         d.FechaDeDerivacion = worksheet.Cells[row, 7].Value?.ToString().Trim();
                         d.FechaDeAudienciaReal = worksheet.Cells[row, 8].Value?.ToString().Trim();
                         d.Asignado = worksheet.Cells[row, 9].Value?.ToString().Trim();
-                        d.FechaDeAntecedentes = worksheet.Cells[row, 10].Value?.ToString().Trim();
-                        d.AntecedentesEnviados = worksheet.Cells[row, 11].Value?.ToString().Trim();
-                        d.Pjud = worksheet.Cells[row, 12].Value?.ToString().Trim();
-                        d.Folio = worksheet.Cells[row, 13].Value?.ToString().Trim();
-                        d.DireccionDeCorreo = worksheet.Cells[row, 14].Value?.ToString().Trim();
+                        //d.FechaDeAntecedentes = worksheet.Cells[row, 10].Value?.ToString().Trim(); //actualizacion 18/07/2022--> no necesita esta informacion en el word
+                        //d.AntecedentesEnviados = worksheet.Cells[row, 11].Value?.ToString().Trim(); //actualizacion 18/07/2022--> no necesita esta informacion en el word
+                        d.Pjud = worksheet.Cells[row, 10].Value?.ToString().Trim();
+                        d.Folio = worksheet.Cells[row, 11].Value?.ToString().Trim();
+                        //d.DireccionDeCorreo = worksheet.Cells[row, 14].Value?.ToString().Trim(); //actualizacion 18/07/2022--> no necesita esta informacion en el word
 
                         listadoDeDerivaciones.Add(d);
 
