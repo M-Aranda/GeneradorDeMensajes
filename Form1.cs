@@ -179,13 +179,13 @@ namespace GeneradorDeMensajes
 
 
             //si el día en el que corre el proceso, es un jueves, entonces deben crearse words de recordatorio de 
-            //la semana que viene (para enviarse ese mismo viernes, o sea, la fecha actual)
+            //la semana que viene (para enviarse ese mismo jueves, o sea, la fecha actual).
             
             var x = DateTime.Now;
             if (x.DayOfWeek == DayOfWeek.Thursday)
             {
-                Console.WriteLine("Es viernes");
-                //deben crearse documentos extra
+                Console.WriteLine("Es Jueves");
+                //deben crearse un documento extra con todas las demandas (separadas por abogada asignada)
                 List<string> listadoDeAbogados = new List<string>();
                 foreach (var item in derivaciones)
                 {
