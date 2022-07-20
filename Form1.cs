@@ -68,136 +68,143 @@ namespace GeneradorDeMensajes
 
             int contadorDeWordsCreadosConFechaDeDerivacionActual = 0;
 
-
-
-
+            List<String> asignadasUnicas = new List<String>();
             foreach (var item in derivaciones)
             {
-
-                //obtener fecha actual
-                var j = DateTime.Now;
-
-                String soloLaFechaActualComoString = "";
-                String soloLaFechaDeDerivacionComoString = "";
-                String soloLaFechaDeAudienciaRealComoString = "";
-                String soloLaFechaDeAntecedentesComoString = "";
-                String soloLaFechaPjudComoString = "";
-
-
-                //quitar el tiempo y mantener la fecha
-                if (item.FechaDeDerivacion!=null)
+                if (item.Asignado!="Asignado")
                 {
+                    asignadasUnicas.Add(item.Asignado);
+                }
                 
-                    string phrase = j.ToString();
-                    string[] words = phrase.Split(' ');
-                    soloLaFechaActualComoString = words[0];
-
-                    phrase = item.FechaDeDerivacion.ToString();
-                    words = phrase.Split(' ');
-                    soloLaFechaDeDerivacionComoString = words[0];
-                    item.FechaDeDerivacion = soloLaFechaDeDerivacionComoString;
-
-
-                    phrase = item.FechaDeAudienciaReal.ToString();
-                    words = phrase.Split(' ');
-                    soloLaFechaDeAudienciaRealComoString = words[0];
-                    item.FechaDeAudienciaReal = soloLaFechaDeAudienciaRealComoString;
-
-                    //phrase = item.FechaDeAntecedentes.ToString();
-                    //words = phrase.Split(' ');
-                    //soloLaFechaDeAntecedentesComoString = words[0];
-                    //item.FechaDeAntecedentes = soloLaFechaDeAntecedentesComoString;
-
-                    phrase = item.Pjud.ToString();
-                    words = phrase.Split(' ');
-                    soloLaFechaPjudComoString = words[0];
-                    item.Pjud = soloLaFechaPjudComoString;
-
-                }
-
-
-
-                //si la fecha actual es igual a la fecha de derivacion, entonces se crea el word, para hoy
-                if ((item.RolOficio != "Rol Oficio" && item.RolOficio != null) && (soloLaFechaActualComoString == soloLaFechaDeDerivacionComoString))
-                {
-                    String archivo = downloads + @"\Rol oficio " + item.RolOficio + ".docx";
-
-                    if (File.Exists(archivo))//archivo existe, no se crea nada
-                    {
-
-                    }
-                    else//archivo no existe, asi que se crea
-                    {
-
-                        var doc = DocX.Create(archivo);
-
-                        //titulo que va a llevar el word
-                        string title = "Estimado/a " + item.Asignado + ",";
-
-                        //texto a escribir en el word
-                        string textParagraph = "usted a sido asignado/a para el " + item.Tribunal + " el día " + item.FechaDeAudienciaReal + " por el rol de oficio " + item.RolOficio + " de la Isapre"
-                            + item.Isapre + ", entre las partes " + item.Partes + ". En materia de " + item.Materia + ". " + Environment.NewLine
-                            + "La fecha de derivacion fue el " + item.FechaDeDerivacion + ". La fecha en que los antecedentes fueron enviados fue el " + item.FechaDeAntecedentes + " y se encuentran en estado" + item.AntecedentesEnviados
-                            + ". El pjud es " + item.Pjud + " y el folio está " + item.Folio;
-
-
-
-                        Formatting titleFormat = new Formatting();
-                        //Specify font family  
-                        titleFormat.FontFamily = new Xceed.Document.NET.Font("Times New Roman");
-                        //Specify font size  
-                        titleFormat.Size = 12;
-                        // titleFormat.Position = 40;
-                        titleFormat.FontColor = System.Drawing.Color.Black;
-                        //titleFormat.UnderlineColor = System.Drawing.Color.Gray;
-                        //titleFormat.Italic = true;
-
-                        //Formatting Text Paragraph  
-                        Formatting textParagraphFormat = new Formatting();
-                        //font family  
-                        textParagraphFormat.FontFamily = new Xceed.Document.NET.Font("Times New Roman");
-                        //font size  
-                        textParagraphFormat.Size = 12;
-                        //Spaces between characters  
-                        // textParagraphFormat.Spacing = 2;
-
-
-                        doc.InsertParagraph(title, false, titleFormat);
-                        doc.InsertParagraph(textParagraph, false, titleFormat);//textParagraphFormat
-
-
-                        doc.Save();
-                        contadorDeWordsCreadosConFechaDeDerivacionActual++;
-
-
-                    }
-                }
-
-
             }
 
+            asignadasUnicas=asignadasUnicas.ToArray().Distinct().ToList();
+
+
+                foreach (var item in derivaciones)
+                {
+
+                    //obtener fecha actual
+                    var j = DateTime.Now;
+
+                    String soloLaFechaActualComoString = "";
+                    String soloLaFechaDeDerivacionComoString = "";
+                    String soloLaFechaDeAudienciaRealComoString = "";
+                    String soloLaFechaDeAntecedentesComoString = "";
+                    String soloLaFechaPjudComoString = "";
+
+
+                    //quitar el tiempo y mantener la fecha
+                    if (item.FechaDeDerivacion != null)
+                    {
+
+                        string phrase = j.ToString();
+                        string[] words = phrase.Split(' ');
+                        soloLaFechaActualComoString = words[0];
+
+                        phrase = item.FechaDeDerivacion.ToString();
+                        words = phrase.Split(' ');
+                        soloLaFechaDeDerivacionComoString = words[0];
+                        item.FechaDeDerivacion = soloLaFechaDeDerivacionComoString;
+
+
+                        phrase = item.FechaDeAudienciaReal.ToString();
+                        words = phrase.Split(' ');
+                        soloLaFechaDeAudienciaRealComoString = words[0];
+                        item.FechaDeAudienciaReal = soloLaFechaDeAudienciaRealComoString;
+
+                        //phrase = item.FechaDeAntecedentes.ToString();
+                        //words = phrase.Split(' ');
+                        //soloLaFechaDeAntecedentesComoString = words[0];
+                        //item.FechaDeAntecedentes = soloLaFechaDeAntecedentesComoString;
+
+                        phrase = item.Pjud.ToString();
+                        words = phrase.Split(' ');
+                        soloLaFechaPjudComoString = words[0];
+                        item.Pjud = soloLaFechaPjudComoString;
+
+                    }
+
+
+
+                    //si la fecha actual es igual a la fecha de derivacion, entonces se crea el word, para hoy
+                    if ((item.RolOficio != "Rol Oficio" && item.RolOficio != null) && (soloLaFechaActualComoString == soloLaFechaDeDerivacionComoString))
+                    {
+                        String archivo = downloads + @"\Demandas asignadas a " + item.Asignado + ".docx";
+
+                        if (File.Exists(archivo))//archivo existe, no se crea nada
+                        {
+
+                        }
+                        else//archivo no existe, asi que se crea
+                        {
+
+                            var doc = DocX.Create(archivo);
+
+                            //titulo que va a llevar el word
+                            string title = "Estimada " + item.Asignado + "," + Environment.NewLine;
+
+                            //texto a escribir en el word
+                            string textParagraph = "El día de hoy se le han asignado nuevos oficios correspondientes" +
+                                " a las siguientes causas:" + Environment.NewLine + Environment.NewLine; //aqui es donde se debiese iterar para mostrar varios oficios
+
+                            String informacionDeDemanda = "";
+                       
+                                informacionDeDemanda += "-	" + item.Tribunal + ", Rol " + item.RolOficio + ", caratulada “" + validarPartes(item.Partes) + "” respecto de Isapre " + item.Isapre + ", " +
+                               "con fecha de audiencia para el día " + convertirFechaAPalabras(item.FechaDeAudienciaReal) + "." + Environment.NewLine;
+
+
+                            textParagraph = textParagraph + informacionDeDemanda;
+
+                               
+
+
+                            Formatting titleFormat = new Formatting();
+                            //Specify font family  
+                            titleFormat.FontFamily = new Xceed.Document.NET.Font("Times New Roman");
+                            //Specify font size  
+                            titleFormat.Size = 12;
+                            // titleFormat.Position = 40;
+                            titleFormat.FontColor = System.Drawing.Color.Black;
+                            //titleFormat.UnderlineColor = System.Drawing.Color.Gray;
+                            //titleFormat.Italic = true;
+
+                            //Formatting Text Paragraph  
+                            Formatting textParagraphFormat = new Formatting();
+                            //font family  
+                            textParagraphFormat.FontFamily = new Xceed.Document.NET.Font("Times New Roman");
+                            //font size  
+                            textParagraphFormat.Size = 12;
+                            //Spaces between characters  
+                            // textParagraphFormat.Spacing = 2;
+
+
+                            doc.InsertParagraph(title, false, titleFormat);
+                            doc.InsertParagraph(textParagraph, false, titleFormat);//textParagraphFormat
+
+                            doc.Save();
+                            contadorDeWordsCreadosConFechaDeDerivacionActual++;
+
+
+                        }
+                    }
+
+                }
+
+            
 
 
             //si el día en el que corre el proceso, es un jueves, entonces deben crearse words de recordatorio de 
             //la semana que viene (para enviarse ese mismo jueves, o sea, la fecha actual).
             
             var x = DateTime.Now;
-            if (x.DayOfWeek == DayOfWeek.Thursday)
+            if (x.DayOfWeek != DayOfWeek.Thursday)
             {
                 Console.WriteLine("Es Jueves");
                 //deben crearse un documento extra con todas las demandas (separadas por abogada asignada)
-                List<string> listadoDeAbogados = new List<string>();
-                foreach (var item in derivaciones)
-                {
-                    listadoDeAbogados.Add(item.Asignado);
-                }
-
-                List<String> listadoDeAbogadosConDuplicados = listadoDeAbogados;
-                List<String> listadoDeAbogadosSinDuplicados = listadoDeAbogadosConDuplicados.Distinct().ToList();
-
-
-                foreach (var item in listadoDeAbogadosSinDuplicados)
-                {
+                //actualizacion 18/07/2022: debe crearse UN SOLO documento de recordatorio para todas.
+        
+              
                     String proximasDemandas ="";
                     int contadorDeDemandasDeLaSemanaQueViene = 0;
 
@@ -246,19 +253,20 @@ namespace GeneradorDeMensajes
 
                         String[] listadoDeProximasFechas = proximasFechas.ToArray();
 
-                        if (item.ToString()==item2.Asignado && listadoDeProximasFechas.Contains(item2.FechaDeAudienciaReal))//si el registro
+                        if (listadoDeProximasFechas.Contains(item2.FechaDeAudienciaReal))//si hay unda demanda la semana que viene
                         {
-                            proximasDemandas += "Demanda " + item2.RolOficio + " entre " + item2.Partes + "el día " + item2.FechaDeAudienciaReal + " en " + item2.Tribunal + ". " + Environment.NewLine;
-                     
+                            proximasDemandas += "-	Rol " + item2.RolOficio + ", fecha de audiencia para el día " + convertirFechaAPalabras(item2.FechaDeAudienciaReal) + "." + Environment.NewLine;
+
+
                             contadorDeDemandasDeLaSemanaQueViene++;
                         }
                     }
 
-                    proximasDemandas += ".";
+                  
 
                     //crear word de recordatorio
 
-                    String archivo = downloads + @"\Recordatorio para " + item.ToString() + ".docx";
+                    String archivo = downloads + @"\Recordatorio oficios de semana siguiente.docx";
 
 
                     if (File.Exists(archivo))//archivo existe, no se crea nada
@@ -271,36 +279,29 @@ namespace GeneradorDeMensajes
                         var doc = DocX.Create(archivo);
 
                         //titulo que va a llevar el word
-                        string title = "Estimado/a " + item.ToString() + ",";
+                        string title = "Estimadas, " + Environment.NewLine;
 
                         //texto a escribir en el word
-                        string textParagraph = title + " se le recuerda que tiene demandas asignadas para la semana que viene. Especificamente: " + Environment.NewLine
-                            + proximasDemandas;
+                        string textParagraph = "Para la próxima semana, tenemos los siguientes oficios con audiencia: "+Environment.NewLine+Environment.NewLine+
+                        proximasDemandas;
 
 
 
-                        Formatting titleFormat = new Formatting();
-                        //Specify font family  
-                        titleFormat.FontFamily = new Xceed.Document.NET.Font("Times New Roman");
-                        //Specify font size  
-                        titleFormat.Size = 12;
-                        titleFormat.Position = 40;
-                        titleFormat.FontColor = System.Drawing.Color.Black;
-                        //titleFormat.UnderlineColor = System.Drawing.Color.Gray;
-                        //titleFormat.Italic = true;
+                    Formatting titleFormat = new Formatting();                   
+                    titleFormat.FontFamily = new Xceed.Document.NET.Font("Times New Roman");
+                    titleFormat.Size = 12;                  
+                    titleFormat.FontColor = System.Drawing.Color.Black;
+               
 
-                        //Formatting Text Paragraph  
-                        Formatting textParagraphFormat = new Formatting();
-                        //font family  
-                        textParagraphFormat.FontFamily = new Xceed.Document.NET.Font("Times New Roman");
-                        //font size  
-                        textParagraphFormat.Size = 12;
-                        //Spaces between characters  
-                        //   textParagraphFormat.Spacing = 2;
+                   
+                    Formatting textParagraphFormat = new Formatting();                     
+                    textParagraphFormat.FontFamily = new Xceed.Document.NET.Font("Times New Roman");                   
+                    textParagraphFormat.Size = 12;
 
 
-                        // doc.InsertParagraph(title, false, titleFormat);
-                        doc.InsertParagraph(textParagraph, false, titleFormat);//textParagraphFormat
+
+                    doc.InsertParagraph(title, false, titleFormat);
+                    doc.InsertParagraph(textParagraph, false, titleFormat);//textParagraphFormat
 
                         if (contadorDeDemandasDeLaSemanaQueViene > 0)
                         {
@@ -310,12 +311,12 @@ namespace GeneradorDeMensajes
 
                     }
 
-                }
+                
 
             }
             else
             {
-                Console.WriteLine("No es viernes");
+                Console.WriteLine("No es jueves");
                 //no se crean documentos extras
                 
             }
@@ -387,5 +388,81 @@ namespace GeneradorDeMensajes
             return listadoDeDerivaciones;
 
         }
+
+        private String convertirFechaAPalabras(String fechaEnFormatoFecha)//mes, dia, anio
+        {
+            String fechaComoPalabras = "";
+
+            string[] palabras = fechaEnFormatoFecha.Split('/');
+
+            //fecha viene asi 07/18/2022
+
+            String dia = palabras[1];
+            String mes = palabras[0];
+            String anio = palabras[2];
+
+            switch (mes)
+            {
+                case "01":
+                    mes = "enero";
+                    break;
+                case "02":
+                    mes = "febrero";
+                    break;
+                case "03":
+                    mes = "marzo";
+                    break;
+                case "04":
+                    mes = "abril";
+                    break;
+                case "05":
+                    mes = "mayo";
+                    break;
+                case "06":
+                    mes = "junio";
+                    break;
+                case "07":
+                    mes = "julio";
+                    break;
+                case "08":
+                    mes = "agosto";
+                    break;
+                case "09":
+                    mes = "septiembre";
+                    break;
+                case "10":
+                    mes = "octubre";
+                    break;
+                case "11":
+                    mes = "noviembre";
+                    break;
+                case "12":
+                    mes = "diciembre";
+                    break;
+                default:
+                    
+                    break;
+
+            }
+
+            fechaComoPalabras = dia+" de "+mes+" de 20"+anio+"";
+
+            return fechaComoPalabras;
+        }
+
+
+        private String validarPartes(String partes)
+        {
+            String partesValidadas = partes;
+
+            if (String.IsNullOrEmpty(partesValidadas))
+            {
+                partesValidadas = "Partes no detalladas";
+            }
+
+            return partesValidadas;
+        }
+
+
     }
 }
