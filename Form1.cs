@@ -37,6 +37,8 @@ namespace GeneradorDeMensajes
         private void button1_Click(object sender, EventArgs e)
         {
 
+
+
             string sFileName = "";
 
             OpenFileDialog choofdlog = new OpenFileDialog();
@@ -91,8 +93,10 @@ namespace GeneradorDeMensajes
                     string frase = hoy.ToString();
                     string[] palabras = frase.Split(' ');
                     fechaComoString = palabras[0];
+                
+                fechaComoString = fechaComoString.Replace("/","-");
 
-                    String archivo = downloads + @"\Demandas asignadas a " + asignada + "el "+ fechaComoString + ".docx";
+                    String archivo = downloads + @"\Demandas asignadas a " + asignada +" "+fechaComoString+ ".docx";
 
                 if (File.Exists(archivo))//archivo existe, no se crea nada
                 {
