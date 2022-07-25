@@ -92,3 +92,7 @@ C:\Users\Chelo\Desktop\GeneradorDeMensajes\obj\Debug\GeneradorDeMensajes.csproj.
 C:\Users\Chelo\Desktop\GeneradorDeMensajes\obj\Debug\GeneradorDeMensajes.csproj.CopyComplete
 C:\Users\Chelo\Desktop\GeneradorDeMensajes\obj\Debug\GeneradorDeMensajes.exe
 C:\Users\Chelo\Desktop\GeneradorDeMensajes\obj\Debug\GeneradorDeMensajes.pdb
+C:\Users\Chelo\Desktop\GeneradorDeMensajes\bin\Debug\GeneradorDeMensajes.exe.manifest
+C:\Users\Chelo\Desktop\GeneradorDeMensajes\bin\Debug\GeneradorDeMensajes.application
+C:\Users\Chelo\Desktop\GeneradorDeMensajes\obj\Debug\GeneradorDeMensajes.exe.manifest
+C:\Users\Chelo\Desktop\GeneradorDeMensajes\obj\Debug\GeneradorDeMensajes.application

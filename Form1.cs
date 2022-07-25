@@ -36,8 +36,8 @@ namespace GeneradorDeMensajes
 
         private void button1_Click(object sender, EventArgs e)
         {
-
-
+     
+            int recordatoriosTotales = 0;
 
             string sFileName = "";
 
@@ -48,23 +48,36 @@ namespace GeneradorDeMensajes
 
             string[] arrAllFiles = new string[] { };
 
-            if (choofdlog.ShowDialog() == DialogResult.OK)
+            while (true)
             {
-                sFileName = choofdlog.FileName;
-                arrAllFiles = choofdlog.FileNames; //used when Multiselect = true           
-            }
+                if (choofdlog.ShowDialog() == DialogResult.OK)
+                {
+                    sFileName = choofdlog.FileName;
+                    arrAllFiles = choofdlog.FileNames; //used when Multiselect = true
+                    break;
+                }
 
+                MessageBox.Show("Debe seleccionar un Excel válido");
+
+            }
+            
+         
             List<Derivacion> derivaciones = leerExcelDeDerivaciones(sFileName);
 
+            var hoySinTiempo = DateTime.Now;
 
 
 
+            string[] hoySinTiempoArray = hoySinTiempo.ToString().Split(' ');
+            String hoySinTiempoComoString = hoySinTiempoArray[0];
+            
+            hoySinTiempoComoString = hoySinTiempoComoString.Replace("/", "-");
+            Console.WriteLine(hoySinTiempoComoString);
 
             string localfolder = ApplicationData.Current.LocalFolder.Path;
             var array = localfolder.Split('\\');
             var username = array[2];
-            string downloads = @"C:\Users\" + username + @"\Downloads\MensajesGenerados\";
-
+            string downloads = @"C:\Users\" + username + @"\Downloads\MensajesGenerados"; //el día "+hoySinTiempoComoString+ @" \" ;
 
             DirectoryInfo di = Directory.CreateDirectory(downloads);
 
@@ -96,7 +109,7 @@ namespace GeneradorDeMensajes
                 
                 fechaComoString = fechaComoString.Replace("/","-");
 
-                    String archivo = downloads + @"\Demandas asignadas a " + asignada +" "+fechaComoString+ ".docx";
+                    String archivo = downloads + @"\Demandas asignadas a " + asignada +" el "+fechaComoString+ ".docx";
 
                 if (File.Exists(archivo))//archivo existe, no se crea nada
                 {
@@ -166,7 +179,7 @@ namespace GeneradorDeMensajes
                         {
                                                   
                             informacionDeDemanda = "-	" + item.Tribunal + ", Rol " + item.RolOficio + ", caratulada “" + validarPartes(item.Partes) + "” respecto de Isapre " + item.Isapre + ", " +
-                           "con fecha de audiencia para el día " + convertirFechaAPalabras(item.FechaDeAudienciaReal) + "." + Environment.NewLine;
+                           "con fecha de audiencia para el día " + convertirFechaAPalabras(item.FechaDeAudienciaReal) + "." + Environment.NewLine + Environment.NewLine;
 
                             textParagraph += informacionDeDemanda;
                         }
@@ -210,7 +223,7 @@ namespace GeneradorDeMensajes
             //la semana que viene (para enviarse ese mismo jueves, o sea, la fecha actual).
             
             var x = DateTime.Now;
-            if (x.DayOfWeek == DayOfWeek.Thursday)
+            if (x.DayOfWeek != DayOfWeek.Thursday)
             {
                 Console.WriteLine("Es Jueves");
                 //deben crearse un documento extra con todas las demandas (separadas por abogada asignada)
@@ -273,11 +286,69 @@ namespace GeneradorDeMensajes
                             contadorDeDemandasDeLaSemanaQueViene++;
                         }
                     }
-                  
 
+                var fechaHoy = DateTime.Now;
+                String proximoLunesComoString = fechaHoy.AddDays(4).ToString();
+                string[] division = proximoLunesComoString.Split(' ');
+                String proximoLunesSinTiempoComoString = division[0];
+                Console.WriteLine(proximoLunesSinTiempoComoString);
+                string[] proximoJuevesSeparado = proximoLunesSinTiempoComoString.Split('/');
+       
+
+
+                String dia = proximoJuevesSeparado[1] + " de ";
+                String mesComoPalabra = "";
+                switch (proximoJuevesSeparado[0])
+                {
+                    case "01":
+                        mesComoPalabra = "enero";
+                        break;
+                    case "02":
+                        mesComoPalabra = "febrero";
+                        break;
+                    case "03":
+                        mesComoPalabra = "marzo";
+                        break;
+                    case "04":
+                        mesComoPalabra = "abril";
+                        break;
+                    case "05":
+                        mesComoPalabra = "mayo";
+                        break;
+                    case "06":
+                        mesComoPalabra = "junio";
+                        break;
+                    case "07":
+                        mesComoPalabra = "julio";
+                        break;
+                    case "08":
+                        mesComoPalabra = "agosto";
+                        break;
+                    case "09":
+                        mesComoPalabra = "septiembre";
+                        break;
+                    case "10":
+                        mesComoPalabra = "octubre";
+                        break;
+                    case "11":
+                        mesComoPalabra = "noviembre";
+                        break;
+                    case "12":
+                        mesComoPalabra = "diciembre";
+                        break;                      
+                    default:
+                        mesComoPalabra = "";
+                        break;
+                }
+
+
+                String mes = mesComoPalabra+" del ";
+                String anio = "20"+ proximoJuevesSeparado[2];
+
+                String lunesDeLaSemanaDeRecordatorios =dia+mes+anio;
                     //crear word de recordatorio
 
-                    String archivo = downloads + @"\Recordatorio oficios de semana siguiente.docx";
+                    String archivo = downloads + @"\Recordatorio oficios de semana siguiente ("+ lunesDeLaSemanaDeRecordatorios + @").docx";
 
 
                     if (File.Exists(archivo))//archivo existe, no se crea nada
@@ -311,6 +382,9 @@ namespace GeneradorDeMensajes
                         if (contadorDeDemandasDeLaSemanaQueViene > 0)
                         {
                             doc.Save();
+
+                        recordatoriosTotales++;
+
                         }
                     }
     
@@ -323,6 +397,7 @@ namespace GeneradorDeMensajes
             }
 
 
+            contadorDeWordsCreadosConFechaDeDerivacionActual += recordatoriosTotales;
 
 
 
@@ -336,10 +411,7 @@ namespace GeneradorDeMensajes
             {
                 MessageBox.Show("No se creó ningún documento para enviar hoy");
             }
-            
-
-
-
+           
         }
 
         private List<Derivacion> leerExcelDeDerivaciones(String sFileName)

@@ -48,7 +48,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.slcExcel);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Generador de mensajes";
             this.ResumeLayout(false);
 
         }
