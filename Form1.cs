@@ -223,7 +223,7 @@ namespace GeneradorDeMensajes
             //la semana que viene (para enviarse ese mismo jueves, o sea, la fecha actual).
             
             var x = DateTime.Now;
-            if (x.DayOfWeek != DayOfWeek.Thursday)
+            if (x.DayOfWeek == DayOfWeek.Thursday)
             {
                 Console.WriteLine("Es Jueves");
                 //deben crearse un documento extra con todas las demandas (separadas por abogada asignada)
