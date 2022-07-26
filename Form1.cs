@@ -36,7 +36,9 @@ namespace GeneradorDeMensajes
 
         private void button1_Click(object sender, EventArgs e)
         {
-     
+
+            MessageBox.Show("Seleccione Excel (una vez que se termine de editar, por el día)");
+
             int recordatoriosTotales = 0;
 
             string sFileName = "";
@@ -56,12 +58,20 @@ namespace GeneradorDeMensajes
                     arrAllFiles = choofdlog.FileNames; //used when Multiselect = true
                     break;
                 }
-
-                MessageBox.Show("Debe seleccionar un Excel válido");
-
+                else
+                {
+                    MessageBox.Show("No se seleccionó nada, proceso terminado.");
+                    System.Environment.Exit(0);
+                    
+                }
             }
-            
+
+
+            try
+            {
+
          
+
             List<Derivacion> derivaciones = leerExcelDeDerivaciones(sFileName);
 
             var hoySinTiempo = DateTime.Now;
@@ -226,6 +236,7 @@ namespace GeneradorDeMensajes
             if (x.DayOfWeek == DayOfWeek.Thursday)
             {
                 Console.WriteLine("Es Jueves");
+                MessageBox.Show("Es jueves; se generará un recordatorio");
                 //deben crearse un documento extra con todas las demandas (separadas por abogada asignada)
                 //actualizacion 18/07/2022: debe crearse UN SOLO documento de recordatorio para todas.
         
@@ -403,15 +414,36 @@ namespace GeneradorDeMensajes
 
             if (contadorDeWordsCreadosConFechaDeDerivacionActual > 1)
             {
-                MessageBox.Show("Se crearon "+contadorDeWordsCreadosConFechaDeDerivacionActual.ToString()+" documentos en la carpeta de descargas para enviar hoy");
+                MessageBox.Show("Se crearon "+contadorDeWordsCreadosConFechaDeDerivacionActual.ToString()+" documentos nuevos en la carpeta de descargas para enviar hoy");
             }else if (contadorDeWordsCreadosConFechaDeDerivacionActual==1)
             {
-                MessageBox.Show("Se creó un documento en la carpeta de descargas para enviar hoy");
+                MessageBox.Show("Se creó un documento nuevo en la carpeta de descargas para enviar hoy");
             }else if (contadorDeWordsCreadosConFechaDeDerivacionActual==0)
             {
                 MessageBox.Show("No se creó ningún documento para enviar hoy");
             }
-           
+
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Debe seleccionar un archivo válido.");
+                MessageBox.Show("Excel a subir debe tener las siguientes columnas:" +
+                    " A: Rol Oficio, " +
+                    " B: Partes, " +
+                    " C: Isapre, " +
+                    " D: Tribunal, " +
+                    " E: Forma de ingreso, " +
+                    " F: Materia, " +
+                    " G: Fecha de derivacion, "+
+                    " H: Fecha de audiencia, " +
+                    " I: Asignado, " +
+                    " J: Pjud, " +
+                    " K: Folio " );
+                MessageBox.Show("Cerrando aplicación.");
+                System.Environment.Exit(0);
+                throw;
+            }
+
         }
 
         private List<Derivacion> leerExcelDeDerivaciones(String sFileName)
